@@ -59,7 +59,7 @@ Route::middleware('auth')->group(function () {
             'reservationAll' => Booking::all()->count(),
             'reservationPending' => Booking::where('status', 'pending')->count(),
             'reservationConfirmed' => Booking::where('status', 'confirmed')->count(),
-            'reservationCanceled' => Booking::where('status', 'canceled')->count(),
+            'reservationCanceled' => Booking::where('status', 'cancelled')->count(),
             'reservationRevenue' => Booking::all()->sum('total_price'),
             'reservationRevenueNowMonth' => Booking::whereMonth('created_at', Carbon::now()->month)->sum('total_price'),
             'reservationOutstandingBalance' => Booking::where('status', 'pending')->sum('total_price'),
