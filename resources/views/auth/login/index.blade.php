@@ -16,24 +16,25 @@
                 {{-- Text --}}
                 <h5 class="mb-3">Silahkan masukkan username dan password untuk Login</h5>
 
-                <form class="form">
+                <form class="form" action="/masuk" method="POST" enctype="multipart/form-data">
+                    @csrf
                     <div class="row">
 
                         {{-- Nama Lengkap --}}
                         <div class="col-12">
                             <div class="form-group">
-                                <label for="first-name-column">Nama Lengkap</label>
-                                <input type="text" id="first-name-column" class="form-control" placeholder="First Name"
-                                    name="fname-column">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" class="form-control" placeholder="Masukkan E-mail"
+                                    name="email">
                             </div>
                         </div>
 
                         {{-- Nomor Telepon --}}
                         <div class="col-12">
                             <div class="form-group">
-                                <label for="last-name-column">Nomor Telepon</label>
-                                <input type="text" id="last-name-column" class="form-control" placeholder="Last Name"
-                                    name="lname-column">
+                                <label for="password">Password</label>
+                                <input type="password" id="password" class="form-control" placeholder="Masukkan Password"
+                                    name="password">
                             </div>
                         </div>
 
@@ -48,7 +49,7 @@
                         </div>
 
                         <div class="col-12 mt-3 d-grid gap-2">
-                            <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
+                            <button type="submit" class="btn btn-primary me-1 mb-1">Login</button>
                         </div>
 
                         <hr class="text-primary my-3">
