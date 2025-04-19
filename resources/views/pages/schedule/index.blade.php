@@ -21,70 +21,55 @@
 
 @section('script')
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        $(document).ready(function() {
             const calendarEl = document.getElementById('calendar');
             const calendar = new FullCalendar.Calendar(calendarEl, {
                 locale: 'id',
                 initialView: 'timeGridWeek',
                 initialDate: new Date(),
-                slotMinTime: "08:00:00",
-                slotMaxTime: "22:00:00",
+                slotMinTime: '08:00:00',
+                slotMaxTime: '23:00:00',
                 allDaySlot: false,
                 selectable: true,
                 headerToolbar: {
-                    left: 'prev,next',
+                    left: 'prev,next today',
                     center: 'title',
-                    right: 'timeGridDay,timeGridWeek'
+                    right: 'timeGridDay, timeGridWeek'
                 },
 
-                // Format jam di sisi kiri
                 slotLabelFormat: {
                     hour: '2-digit',
                     minute: '2-digit',
                     hour12: false
                 },
 
-                // Format waktu di event, nanti kita tambahin WIB via event render
                 eventTimeFormat: {
                     hour: '2-digit',
                     minute: '2-digit',
                     hour12: false
                 },
 
-                // Format hari jadi: 14 - April - 2025
                 dayHeaderFormat: {
                     day: '2-digit',
                     month: 'long',
                     year: 'numeric'
                 },
 
-                events: [
-                    // Contoh booking yang sudah ada
-                    {
-                        title: 'Booking Lapangan 1',
-                        start: '2025-04-19T09:00:00',
-                        end: '2025-04-19T10:00:00',
-                        backgroundColor: '#dc3545',
-                        borderColor: '#dc3545',
-                    },
-                    {
-                        title: 'Booking Lapangan 2',
-                        start: '2025-04-20T13:00:00',
-                        end: '2025-04-20T15:00:00',
-                        backgroundColor: '#ffc107',
-                        borderColor: '#ffc107',
+                events: {
+                    url: '/events',
+                    method: 'GET',
+                    failure: function() {
+                        alert('Terjadi kesalahan saat memuat jadwal');
                     }
-                ],
+                },
 
                 select: function(info) {
-                    if (confirm("Reservasi sekarang?") == true) {
-                        window.location.href = "/reservation";
+                    if (confirm('Apakah Anda yakin ingin membuat jadwal?')) {
+                        window.location.href = '/reservation';
                     }
                 }
-
             });
-
             calendar.render();
-        });
+        })
     </script>
 @endsection

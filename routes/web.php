@@ -3,6 +3,9 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\FieldController;
+use App\Models\Booking;
+use App\Models\Field;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
 
 // Frontend
@@ -21,6 +24,7 @@ Route::get('/schedule', function () {
 Route::get('/reservation', function () {
     return view('pages.reservation.index', [
         'title' => 'Reservasi',
+        'fields' => Field::all(),
     ]);
 });
 
@@ -41,13 +45,24 @@ Route::get('/login', [AuthController::class, 'loginPage'])->name('login');
 Route::post('/masuk', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 
+// Dom Manipulation (without logged in)
+Route::get('/events', [BookingController::class, 'events']);
+
 // Backend Admin
 Route::middleware('auth')->group(function () {
     
     Route::get('/admin', function () {
         return view('admin.pages.dashboard.index', [
             'title' => 'Dashboard',
-            'headingTitle' => 'Dashboard'
+            'headingTitle' => 'Dashboard',
+            'reservations' => Booking::latest()->take(5)->get(),
+            'reservationAll' => Booking::all()->count(),
+            'reservationPending' => Booking::where('status', 'pending')->count(),
+            'reservationConfirmed' => Booking::where('status', 'confirmed')->count(),
+            'reservationCanceled' => Booking::where('status', 'canceled')->count(),
+            'reservationRevenue' => Booking::all()->sum('total_price'),
+            'reservationRevenueNowMonth' => Booking::whereMonth('created_at', Carbon::now()->month)->sum('total_price'),
+            'reservationOutstandingBalance' => Booking::where('status', 'pending')->sum('total_price'),
         ]);
     });
 

@@ -8,6 +8,7 @@ use App\Models\Field;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class BookingController extends Controller
 {
@@ -39,6 +40,39 @@ class BookingController extends Controller
 
         // Returning 
         return response()->json($field);
+    }
+
+    public function events() {
+        
+        $bookings = DB::table('bookings')
+        ->whereNot('status', 'cancelled')
+        ->get();
+
+        $events = [];
+
+        foreach ($bookings as $booking) {
+            $events[] = [
+                'title' => 'Booking Lapangan ' . $booking->customer_name,
+                'start' => $booking->booking_date . 'T' . $booking->start_time,
+                'end'   => $booking->booking_date . 'T' . $booking->end_time,
+                'backgroundColor' => $booking->status == 'confirmed' ? '#435ebe' : '#6c757d',
+                'borderColor' => $booking->status == 'confirmed' ? '#435ebe' : '#6c757d',
+            ];
+        }
+
+        // return response()->json($bookings);
+        return response()->json($events);
+
+        // return response()->json([
+        //     [
+        //         'title' => 'Dummy Booking',
+        //         'start' => '2025-04-20T10:00:00',
+        //         'end' => '2025-04-20T11:00:00',
+        //         'backgroundColor' => '#28a745',
+        //         'borderColor' => '#28a745',
+        //     ]
+        // ]);
+
     }
 
     public function store(Request $request)

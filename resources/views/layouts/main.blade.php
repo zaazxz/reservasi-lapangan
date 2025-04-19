@@ -79,6 +79,7 @@
     {{-- CDN Javascript : Start --}}
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/locales-all.global.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     {{-- CDN Javascript : End --}}
 
     {{-- Custom JS : Start --}}
