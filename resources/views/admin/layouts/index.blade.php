@@ -87,6 +87,10 @@
     <script src="{{ asset('assets/static/js/pages/simple-datatables.js') }}"></script>
     {{-- Javascript Page : End --}}
 
+    {{-- CDN : Start --}}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {{-- CDN : End --}}
+
     {{-- Custom Javascrcipt : Start --}}
     @yield('script')
     {{-- Custom Javascript : End --}}

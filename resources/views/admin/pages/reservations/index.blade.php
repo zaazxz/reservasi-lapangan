@@ -5,87 +5,82 @@
 
         {{-- Create Button : Start --}}
         <div class="d-grid gap-2 mb-3">
-            <a href="" class="btn btn-primary">Tambah Reservasi</a>
+            <a href="/admin/reservations/create" class="btn btn-primary">Tambah Reservasi</a>
         </div>
         {{-- Create Button : End --}}
 
-        {{-- Reservation Revenue Card : Start --}}
+        {{-- Reservation Card : Start --}}
         <div class="col-12">
             <div class="row">
 
-                {{-- Reservasion Table : Start --}}
+                {{-- All Reservasion Table : Start --}}
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
                             <h4>Data Reservasi Terbaru</h4>
                         </div>
                         <div class="card-body">
-                            <table class="table table-striped" id="table1">
+                            <table class="table" id="table1">
                                 <thead>
                                     <tr>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Phone</th>
-                                        <th>City</th>
+                                        <th>No</th>
+                                        <th>Nama Customer</th>
+                                        <th>Tanggal</th>
+                                        <th>Jam Mulai</th>
+                                        <th>Jam Selesai</th>
                                         <th>Status</th>
+                                        <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>Channing</td>
-                                        <td>tempor.bibendum.Donec@ornarelectusante.ca</td>
-                                        <td>0845 46 49</td>
-                                        <td>Warrnambool</td>
-                                        <td>
-                                            <span class="badge bg-success">Active</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Aladdin</td>
-                                        <td>sem.ut@pellentesqueafacilisis.ca</td>
-                                        <td>0800 1111</td>
-                                        <td>Bothey</td>
-                                        <td>
-                                            <span class="badge bg-success">Active</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Cruz</td>
-                                        <td>non@quisturpisvitae.ca</td>
-                                        <td>07624 944915</td>
-                                        <td>Shikarpur</td>
-                                        <td>
-                                            <span class="badge bg-success">Active</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Keegan</td>
-                                        <td>molestie.dapibus@condimentumDonecat.edu</td>
-                                        <td>0800 200103</td>
-                                        <td>Assen</td>
-                                        <td>
-                                            <span class="badge bg-success">Active</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Ray</td>
-                                        <td>placerat.eget@sagittislobortis.edu</td>
-                                        <td>(0112) 896 6829</td>
-                                        <td>Hofors</td>
-                                        <td>
-                                            <span class="badge bg-success">Active</span>
-                                        </td>
-                                    </tr>
+                                    @foreach ($reservations as $reservation)
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $reservation->customer_name }}</td>
+                                            <td>{{ $reservation->booking_date }}</td>
+                                            <td>{{ $reservation->start_time }}</td>
+                                            <td>{{ $reservation->end_time }}</td>
+                                            <td>
+                                                @if ($reservation->status == 'pending')
+                                                    <span class="badge bg-warning">Pending</span>
+                                                @elseif ($reservation->status == 'confirmed')
+                                                    <span class="badge bg-success">Confirmed</span>
+                                                @else
+                                                    <span class="badge bg-danger">Cancelled</span>
+                                                @endif
+                                            </td>
+                                            <td>
+
+                                                {{-- Edit --}}
+                                                <a href="/admin/reservations/show/{{ $reservation->id }}">
+                                                    <button class="btn btn-info text-white mx-2">
+                                                        <i class="bi bi-info-square"></i>
+                                                    </button>
+                                                </a>
+
+                                                @if ($reservation->status == 'pending')
+                                                    {{-- Delete --}}
+                                                    <a href="/admin/reservations/delete/{{ $reservation->id }}">
+                                                        <button class="btn btn-danger mx-2"
+                                                            onclick="confirm('Apakah anda yakin ingin menghapus data ini?')">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </a>
+                                                @endif
+
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
-                {{-- Reservasion Table : End --}}
+                {{-- All Reservasion Table : End --}}
 
             </div>
         </div>
-        {{-- Reservation Revenue Card : End --}}
+        {{-- Reservation Card : End --}}
 
     </div>
 @endsection

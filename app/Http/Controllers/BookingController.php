@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 // app/Http/Controllers/BookingController.php
 namespace App\Http\Controllers;
@@ -6,67 +6,133 @@ namespace App\Http\Controllers;
 use App\Models\Booking;
 use App\Models\Field;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Carbon\Carbon;
 
 class BookingController extends Controller
 {
+
+    public function index()
+    {
+        return view('admin.pages.reservations.index', [
+            'title' => 'Reservations',
+            'headingTitle' => 'Reservations',
+            'reservations' => Booking::all()
+        ]);
+    }
+
     public function create()
     {
         $fields = Field::all();
-        return view('bookings.create', compact('fields'));
+        return view('admin.pages.reservations.create', [
+            'title' => 'Create Reservations',
+            'headingTitle' => 'Create Reservations',
+            'fields' => $fields,
+        ]);
+    }
+
+    public function request(Request $request)
+    {
+
+        // Searching Field ID Same by Request
+        $field = Field::where('id', $request->field)->first();
+
+        // Returning 
+        return response()->json($field);
     }
 
     public function store(Request $request)
     {
-        // Validasi input
-        $validated = $request->validate([
-            'field_id' => 'required|exists:fields,id',
-            'customer_name' => 'required|string|max:255',
-            'customer_phone' => 'required|string|max:255',
-            'booking_date' => 'required|date',
-            'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i|after:start_time',
+        $data = (object) $request->validate([
+            'customer_name' => '',
+            'customer_phone' => '',
+            'field_id' => '',
+            'booking_date' => '',
+            'start_time' => '',
+            'end_time' => '',
+            'total_price' => '',
+            'total_payment' => '',
+            'dp_amount' => '',
         ]);
 
-        // Hitung harga dan DP
-        $field = Field::find($request->field_id);
-        $totalPrice = $field->price_per_hour * (Carbon::parse($request->end_time)->diffInHours(Carbon::parse($request->start_time)));
+        // dd($data);
 
-        $dpAmount = $totalPrice * ($request->dp_percentage / 100);
-        $dpDeadline = Carbon::now()->addDay(); // DP Deadline 1x24 jam
-
-        // Simpan booking
-        $booking = Booking::create([
-            'field_id' => $request->field_id,
-            'customer_name' => $request->customer_name,
-            'customer_phone' => $request->customer_phone,
-            'booking_date' => $request->booking_date,
-            'start_time' => $request->start_time,
-            'end_time' => $request->end_time,
-            'total_price' => $totalPrice,
-            'dp_amount' => $dpAmount,
-            'dp_deadline' => $dpDeadline,
-            'status' => 'pending',
+        Booking::create([
+            'id' => (string) Str::uuid(),
+            'customer_name' => $data->customer_name,
+            'customer_phone' => $data->customer_phone,
+            'field_id' => $data->field_id,
+            'booking_date' => $data->booking_date,
+            'start_time' => $data->start_time,
+            'end_time' => $data->end_time,
+            'total_price' => $data->total_price,
+            'dp_amount' => $data->dp_amount,
+            'remaining_amount' => $data->total_price - $data->dp_amount,
+            'total_payment' => $data->dp_amount,
+            'payment_deadline' => Carbon::parse($data->booking_date)->subDays(1)->format('Y-m-d'),
         ]);
 
-        return redirect()->route('bookings.index')->with('success', 'Booking successfully created!');
+        if ($data) {
+            return redirect('/admin/reservations')->with('success', 'Reservations created successfully');
+        } else {
+            return redirect('/admin/reservations') - with('error', 'Reservations created failed');
+        }
     }
 
-    public function updateStatus($id, $status)
+    public function show($id)
     {
         $booking = Booking::findOrFail($id);
-        $booking->status = $status;
-        $booking->save();
 
-        return redirect()->route('bookings.index')->with('success', 'Booking status updated!');
+        return view('admin.pages.reservations.show', [
+            'title' => 'Detail Reservations',
+            'headingTitle' => 'Detail Reservations',
+            'reservation' => $booking,
+        ]);
     }
 
-    public function cancelBooking($id)
+    public function cancel($id)
     {
         $booking = Booking::findOrFail($id);
-        $booking->status = 'cancelled';
-        $booking->save();
 
-        return redirect()->route('bookings.index')->with('success', 'Booking cancelled.');
+        Booking::where('id', $booking->id)->update([
+            'status' => 'cancelled',
+            'remaining_amount' => 0,
+        ]);
+
+        if ($booking) {
+            return redirect('/admin/reservations')->with('success', 'Reservations created successfully');
+        } else {
+            return redirect('/admin/reservations') - with('error', 'Reservations created failed');
+        }
+    }
+
+    public function paid($id)
+    {
+        $booking = Booking::findOrFail($id);
+
+        Booking::where('id', $booking->id)->update([
+            'status' => 'confirmed',
+            'remaining_amount' => 0,
+            'total_payment' => $booking->dp_amount + $booking->remaining_amount
+        ]);
+
+        if ($booking) {
+            return redirect('/admin/reservations')->with('success', 'Reservations created successfully');
+        } else {
+            return redirect('/admin/reservations') - with('error', 'Reservations created failed');
+        }
+    }
+
+    public function destroy($id)
+    {
+        $booking = Booking::findOrFail($id);
+
+        Booking::destroy('id', $booking->id);
+
+        if ($booking) {
+            return redirect('/admin/reservations')->with('success', 'Reservations created successfully');
+        } else {
+            return redirect('/admin/reservations') - with('error', 'Reservations created failed');
+        }
     }
 }

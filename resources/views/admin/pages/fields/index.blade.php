@@ -5,7 +5,7 @@
 
         {{-- Create Button : Start --}}
         <div class="d-grid gap-2 mb-3">
-            <a href="" class="btn btn-primary">Tambah Reservasi</a>
+            <a href="/admin/fields/create" class="btn btn-primary">Tambah Reservasi</a>
         </div>
         {{-- Create Button : End --}}
 
@@ -17,65 +17,45 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4>Data Reservasi Terbaru</h4>
+                            <h4>Seluruh Lapangan</h4>
                         </div>
                         <div class="card-body">
                             <table class="table table-striped" id="table1">
                                 <thead>
                                     <tr>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Phone</th>
-                                        <th>City</th>
-                                        <th>Status</th>
+                                        <th>No</th>
+                                        <th>Nama Lapangan</th>
+                                        <th>Harga Per-Jam</th>
+                                        <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>Channing</td>
-                                        <td>tempor.bibendum.Donec@ornarelectusante.ca</td>
-                                        <td>0845 46 49</td>
-                                        <td>Warrnambool</td>
-                                        <td>
-                                            <span class="badge bg-success">Active</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Aladdin</td>
-                                        <td>sem.ut@pellentesqueafacilisis.ca</td>
-                                        <td>0800 1111</td>
-                                        <td>Bothey</td>
-                                        <td>
-                                            <span class="badge bg-success">Active</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Cruz</td>
-                                        <td>non@quisturpisvitae.ca</td>
-                                        <td>07624 944915</td>
-                                        <td>Shikarpur</td>
-                                        <td>
-                                            <span class="badge bg-success">Active</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Keegan</td>
-                                        <td>molestie.dapibus@condimentumDonecat.edu</td>
-                                        <td>0800 200103</td>
-                                        <td>Assen</td>
-                                        <td>
-                                            <span class="badge bg-success">Active</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Ray</td>
-                                        <td>placerat.eget@sagittislobortis.edu</td>
-                                        <td>(0112) 896 6829</td>
-                                        <td>Hofors</td>
-                                        <td>
-                                            <span class="badge bg-success">Active</span>
-                                        </td>
-                                    </tr>
+
+                                    @foreach ($fields as $field)
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $field->name }}</td>
+                                            <td>Rp. {{ $field->price_per_hour }}</td>
+                                            <td class="d-flex">
+
+                                                {{-- Edit --}}
+                                                <a href="/admin/fields/edit/{{ $field->id }}">
+                                                    <button class="btn btn-warning text-white mx-2">
+                                                        <i class="bi bi-pencil-square"></i>
+                                                    </button>
+                                                </a>
+
+                                                {{-- Delete --}}
+                                                <a href="/admin/fields/delete/{{ $field->id }}">
+                                                    <button class="btn btn-danger mx-2" onclick="confirm('Apakah anda yakin ingin menghapus data ini?')">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </a>
+
+                                            </td>
+                                        </tr>
+                                    @endforeach
+
                                 </tbody>
                             </table>
                         </div>

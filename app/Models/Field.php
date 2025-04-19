@@ -8,10 +8,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Field extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $keyType = 'string';
-    protected $fillable = ['name', 'price_per_hour'];
+    protected $fillable = ['id', 'name', 'price_per_hour'];
     
     public function bookings() {
         return $this->hasMany(Booking::class, 'field_id', 'id');

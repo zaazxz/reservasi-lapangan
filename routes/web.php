@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\BookingController;
+use App\Http\Controllers\FieldController;
 use Illuminate\Support\Facades\Route;
 
 // Frontend
@@ -59,16 +61,23 @@ Route::get('/admin/vouchers', function() {
     ]);
 });
 
-Route::get('/admin/reservations', function() {
-    return view('admin.pages.reservations.index', [
-        'title' => 'Reservations',
-        'headingTitle' => 'Reservations'
-    ]);
-});
 
-Route::get('/admin/fields', function() {
-    return view('admin.pages.fields.index', [
-        'title' => 'Fields',
-        'headingTitle' => 'Fields'
-    ]);
-});
+// Reservations
+Route::get('/admin/reservations', [BookingController::class, 'index']);
+Route::get('/admin/reservations/create', [BookingController::class, 'create']);
+Route::get('/admin/reservations/show/{id}', [BookingController::class, 'show']);
+Route::get('/admin/reservations/delete/{id}', [BookingController::class, 'destroy']);
+Route::get('/admin/reservations/cancel/{id}', [BookingController::class, 'cancel']);
+Route::get('/admin/reservations/paid/{id}', [BookingController::class, 'paid']);
+Route::post('/admin/reservations/store', [BookingController::class, 'store']);
+
+// DOM Manipulation
+Route::get('/admin/fields/request/{field}', [BookingController::class, 'request']);
+
+// Fields
+Route::get('/admin/fields', [FieldController::class, 'index']);
+Route::get('/admin/fields/create', [FieldController::class, 'create']);
+Route::get('/admin/fields/edit/{field}', [FieldController::class, 'edit']);
+Route::get('/admin/fields/delete/{field}', [FieldController::class, 'destroy']);
+Route::post('/admin/fields/store', [FieldController::class, 'store']);
+Route::post('/admin/fields/update/{field}', [FieldController::class, 'update']);

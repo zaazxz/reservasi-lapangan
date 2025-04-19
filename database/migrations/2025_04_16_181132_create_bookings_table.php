@@ -13,21 +13,19 @@ return new class extends Migration
     {
         Schema::create('bookings', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('field_id');
-            $table->foreign('field_id')->references('id')->on('fields')->onDelete('cascade');
             $table->string('customer_name');
             $table->string('customer_phone');
-            $table->date('booking_date');
-            $table->time('start_time');
-            $table->time('end_time');
+            $table->uuid('field_id');
+            $table->foreign('field_id')->references('id')->on('fields')->onDelete('cascade'); // Data lapang
+            $table->date('booking_date'); // Tanggal Booking
+            $table->time('start_time'); // Jam Mulai
+            $table->time('end_time'); // Jam Selesai
             $table->enum('status', ['pending', 'confirmed', 'cancelled'])->default('pending');
-            $table->unsignedTinyInteger('dp_percentage')->default(15);
-            $table->integer('total_price')->nullable();
-            $table->integer('dp_amount')->nullable();
-            $table->integer('remaining_amount')->nullable();
-            $table->boolean('is_dp_paid')->default(false);
-            $table->boolean('is_fully_paid')->default(false);
-            $table->timestamp('dp_deadline');
+            $table->integer('total_price')->nullable(); // Rincian Harga
+            $table->integer('dp_amount')->nullable(); // Total Downpayment
+            $table->integer('remaining_amount')->nullable(); // Outstanding Balance
+            $table->integer('total_payment');
+            $table->timestamp('payment_deadline'); 
             $table->timestamps();
         });
     }
